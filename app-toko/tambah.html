@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Tambah Barang</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #dce8f8 0%, #c8d9f0 40%, #b8cfe8 100%);
+    min-height: 100vh;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 620px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* Header badge */
+  .page-header { text-align: center; }
+  .page-header .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: 999px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3a6fc4;
+    letter-spacing: 0.3px;
+  }
+  .badge .dot {
+    width: 8px; height: 8px;
+    background: #4a90e2;
+    border-radius: 50%;
+    animation: pulse 1.8s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  /* Card */
+  .card {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.9);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 8px 32px rgba(74,144,226,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .card-title .icon {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    box-shadow: 0 4px 12px rgba(74,144,226,0.35);
+  }
+  .card-title h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a2e4a;
+    letter-spacing: -0.2px;
+  }
+  .card-title span {
+    font-size: 12px;
+    font-weight: 400;
+    color: #7a9bbf;
+    display: block;
+  }
+
+  /* Input group */
+  .input-group { margin-bottom: 16px; position: relative; }
+  .input-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4a6fa5;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .input-wrap { position: relative; }
+  .input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+  input {
+    width: 100%;
+    padding: 13px 16px 13px 42px;
+    border-radius: 12px;
+    border: 1.5px solid #d0dff0;
+    background: rgba(255,255,255,0.8);
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #1a2e4a;
+    transition: all 0.2s;
+    outline: none;
+  }
+  input:focus {
+    border-color: #4a90e2;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(74,144,226,0.12);
+  }
+  input::placeholder { color: #a8bdd4; font-size: 13px; }
+
+  /* Button */
+  .btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+    border: none;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 14px rgba(74,144,226,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(74,144,226,0.5);
+  }
+  .btn:active { transform: translateY(0); }
+
+  /* Response message */
+  #response {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 14px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    display: none;
+  }
+  #response.success {
+    display: block;
+    color: #1a7a4a;
+    background: rgba(39,174,96,0.1);
+    border: 1px solid rgba(39,174,96,0.25);
+  }
+  #response.error {
+    display: block;
+    color: #c0392b;
+    background: rgba(231,76,60,0.1);
+    border: 1px solid rgba(231,76,60,0.25);
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    flex: 1;
+    background: linear-gradient(135deg, rgba(74,144,226,0.1), rgba(53,122,189,0.06));
+    border: 1px solid rgba(74,144,226,0.18);
+    border-radius: 12px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .stat-value { font-size: 22px; font-weight: 700; color: #2869b0; }
+  .stat-label { font-size: 11px; color: #7a9bbf; font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 2px; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; min-width: 360px; }
+  thead tr {
+    background: linear-gradient(90deg, rgba(74,144,226,0.08), rgba(53,122,189,0.05));
+  }
+  th {
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #4a6fa5;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    text-align: left;
+    border-bottom: 2px solid rgba(74,144,226,0.15);
+  }
+  td {
+    padding: 13px 16px;
+    font-size: 13.5px;
+    color: #2c4a6e;
+    border-bottom: 1px solid rgba(74,144,226,0.08);
+    transition: background 0.15s;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: rgba(74,144,226,0.04); }
+
+  .item-name { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .item-name::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: #4a90e2;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .price-badge {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #e8f2fd, #d0e6f8);
+    color: #2869b0;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(74,144,226,0.2);
+  }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 30px 0; color: #9ab5d0; }
+  .empty-state .empty-icon { font-size: 36px; margin-bottom: 8px; }
+  .empty-state p { font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="badge">
+      <span class="dot"></span>
+      Sistem Manajemen Toko
+    </div>
+  </div>
+
+  <!-- FORM CARD -->
+  <div class="card">
+    <div class="card-title">
+      <div>
+        <h2>Tambah Barang</h2>
+        <span>Isi form di bawah untuk menambah produk baru</span>
+      </div>
+    </div>
+
+    <form id="formBarang">
+      <div class="input-group">
+        <label>Nama Barang</label>
+        <div class="input-wrap">
+          <input type="text" id="nama" placeholder="" required>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Harga (Rp)</label>
+        <div class="input-wrap">
+          <input type="number" id="harga" placeholder="" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn">
+        <span>✚</span> Simpan Barang
+      </button>
+    </form>
+
+    <p id="response"></p>
+  </div>
+
+  <!-- LIST CARD -->
+  <div class="card">
+    <div class="card-title">
+      <div>
+        <h2>Daftar Barang</h2>
+        <span>Semua produk yang tersedia di toko</span>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value" id="totalBarang">—</div>
+        <div class="stat-label">Total Produk</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="rataHarga">—</div>
+        <div class="stat-label">Rata-rata Harga</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nama Barang</th>
+            <th>Harga</th>
+          </tr>
+        </thead>
+        <tbody id="listBarang">
+          <tr>
+            <td colspan="3">
+              <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>Belum ada data barang</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ========================
+  // TAMBAH DATA
+  // ========================
+  document.getElementById("formBarang").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const nama = document.getElementById("nama").value.trim();
+    const harga = document.getElementById("harga").value;
+    const resp = document.getElementById("response");
+
+    fetch("http://program31.test/api-toko/tambah_barang.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nama_barang: nama, harga: harga })
+    })
+    .then(res => res.json())
+    .then(data => {
+      resp.className = data.status === "success" ? "success" : "error";
+      resp.textContent = data.status === "success" ? "✅ " + data.pesan : "❌ " + data.pesan;
+
+      if (data.status === "success") {
+        document.getElementById("formBarang").reset();
+        loadData();
+      }
+
+      setTimeout(() => {
+        resp.className = "";
+        resp.textContent = "";
+        resp.style.display = "none";
+      }, 3000);
+    })
+    .catch(() => {
+      resp.className = "error";
+      resp.textContent = "❌ Gagal terhubung ke server.";
+    });
+  });
+
+  // ========================
+  // AMBIL & RENDER DATA
+  // ========================
+  function loadData() {
+    fetch("http://program31.test/api-toko/get_barang.php")
+      .then(res => res.json())
+      .then(res => renderTable(res.data))
+      .catch(() => renderTable([]));
+  }
+
+  function renderTable(data) {
+    const list = document.getElementById("listBarang");
+    const totalEl = document.getElementById("totalBarang");
+    const rataEl = document.getElementById("rataHarga");
+
+    if (!data || data.length === 0) {
+      list.innerHTML = `
+        <tr>
+          <td colspan="3">
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <p>Belum ada data barang</p>
+            </div>
+          </td>
+        </tr>`;
+      totalEl.textContent = "0";
+      rataEl.textContent = "Rp 0";
+      return;
+    }
+
+    const total = data.length;
+    const rata = Math.round(data.reduce((s, i) => s + Number(i.harga), 0) / total);
+    totalEl.textContent = total;
+    rataEl.textContent = "Rp " + rata.toLocaleString("id-ID");
+
+    list.innerHTML = data.map((item, i) => `
+      <tr>
+        <td style="color:#9ab5d0; font-size:12px; font-weight:600;">${String(i + 1).padStart(2, "0")}</td>
+        <td><span class="item-name">${item.nama_barang}</span></td>
+        <td><span class="price-badge">Rp ${Number(item.harga).toLocaleString("id-ID")}</span></td>
+      </tr>
+    `).join("");
+  }
+
+  // LOAD AWAL
+  loadData();
+</script>
+
+</body>
+</html>
