@@ -350,7 +350,7 @@
     const harga = document.getElementById("harga").value;
     const resp = document.getElementById("response");
 
-    fetch("http://program31.test/api-toko/tambah_barang.php", {
+    fetch("https://farhantambahbarang.infinityfreeapp.com/api-toko/tambah_barang.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nama_barang: nama, harga: harga })
@@ -381,7 +381,7 @@
   // AMBIL & RENDER DATA
   // ========================
   function loadData() {
-    fetch("http://program31.test/api-toko/get_barang.php")
+    fetch("https://farhantambahbarang.infinityfreeapp.com/api-toko/get_barang.php")
       .then(res => res.json())
       .then(res => renderTable(res.data))
       .catch(() => renderTable([]));
